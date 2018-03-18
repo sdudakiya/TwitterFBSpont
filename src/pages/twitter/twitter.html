@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>
+      Twitter
+    </ion-title>
+    <ion-buttons end>
+        <button ion-button icon-only *ngIf="isLoggedIn" (click)="composeTweet()">
+          <ion-icon name="create"></ion-icon>
+        </button>
+      </ion-buttons>
+  </ion-navbar>
+</ion-header>
+ 
+<ion-content padding>
+
+    <ion-refresher (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+      </ion-refresher>
+
+    <div *ngIf="!isLoggedIn" class="login-content" padding>
+      <ion-row class="top-row">
+          <ion-col>
+            <h1 class="label-logo">Login to Twitter</h1>
+            <p class="label-description">This app helps you discover and buy amazing things all in one place</p>
+          </ion-col>
+        </ion-row>
+      <button ion-button full (click)="loginWithTwitter()">
+        Click here to Login
+      </button>
+    </div>
+      
+      <ion-card *ngFor="let tweet of tweets | async">
+          <ion-item>
+            <ion-avatar item-left>
+              <img src="{{tweet.user.profile_image_url}}">
+            </ion-avatar>
+            <h2>{{tweet.user.name}}</h2>
+            <p>{{dateForTweet(tweet.created_at)}}</p>
+          </ion-item>
+       
+          <img src="{{tweet.extended_entities.media[0].media_url}}" *ngIf="tweet.extended_entities">
+       
+          <ion-card-content>
+            <p>{{tweet.text}}</p>
+          </ion-card-content>
+       
+          <ion-row>
+            <ion-col *ngIf="tweet.entities.urls.length > 0">
+              <button ion-button clear small (click)="openLinkUrl(tweet.entities.urls[0].url)">
+                <ion-icon name="open"></ion-icon>
+                <div>Open Link</div>
+              </button>
+            </ion-col>
+          </ion-row>
+
+        </ion-card>
+
+</ion-content>
+<ion-footer>
+    <ion-toolbar>
+       <button ion-button block *ngIf="isLoggedIn" (click)="twitter_Logout()">Logout</button>
+    </ion-toolbar>
+  </ion-footer>
